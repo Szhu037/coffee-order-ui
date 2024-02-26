@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <title>Coffee Order System</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items:center;
+            height: 100vh;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="page-start" class="container">
+    <button onclick="showBeverageOptions()">Start your order here</button>
+</div>
+
+<div id="page-beverage" class="container" style="display: none;"></div>
+    <div class="buttons">
+        <button onclick="selectBeverage('Dark roast')">Dark roast ($2.50)</button>
+        <button onclick="selectBeverage('Espresso')">Espresso ($3.00)</button>
+        <button onclick="selectBeverage('House blend')">House blend ($2.00)</button>
+        <button onclick="selectBeverage('Decaf')">Decaf ($2.50)</button>
+    </div>
+    <div class="cart" id="cart"></div>
+</div>
+
+<div id="page-condiments" class="container" style="display: none;"></div>
+<div class="buttons">
+    <button onclick="addCondiment('Milk')">Milk</button>
+    <button onclick="addCondiment('Mocha')">Mocha</button>
+    <button onclick="addCondiment('Soy')">Soy</button>
+    <button onclick="addCondiment('Whip')">Whip</button>
+</div>
+<div class="cart" id="cart-condiments"></div>
+<button onclick="goBackToBeverages()">Back to Beverages</button>
+</div>
+
+<div id="page-confirmation" class="container" style="display: none">
+    <h2>Order Confirmation</h2>
+    <p id="order-summary"></p>
+    <button onclick="confirmOrder()">Confirm Order</button>
+</div>
+
+<script>
+    let selectedBeverage = "";
+    let selectedCondiments = [];
+
+    function showBeverageOptions() {
+        document.getElementById('page-start').style.display = 'none';
+        document.getElementById('page-beverage').style.display = 'block';
+    }
+    function selectBeverage(beverage) {
+        selectedBeverage = beverage;
+        document.getElementById('page-beverage').style.display = 'none';
+        document.getElementById('page-condiments').style.display = 'block';
+    }
+    function addCondiment(condiment) {
+        selectedCondiments.push(condiment);
+        renderCondiments();
+    }
+    function removeCondiment(index) {
+        selectedCondiments.splice(index, 1);
+        renderCondiments();
+    }
+    function goBackToBeverages() {
+        selectedBeverage = "";
+        selectedCondiments = [];
+        document.getElementById('page-beverage').style.display = 'block';
+        document.getElementById('page-condiments').style.display = 'none';
+    }
+    function renderCondiments() {
+        const cartCondiments = document.getElementById('cart-condiments');
+        cartCondiments.innerHTML = '';
+        selectedCondiments.forEach((condiment,index) => {
+            const condimentButton = document.createElement('button');
+            condimentButton.textContent = condiment;
+            condimentButton.onclick = () => removeCondiment(index);
+            cartCondiments.appendChild(condimentButton);
+        });
+    }
+    function confirmOrder() {
+        const orderSummary = `Selected Beverage: ${selectedBeverage}\nCondiments: ${selectedCondiments.join(', ')}`;
+        document.getElementById('order-summary').textContent = orderSummary;
+        document.getElementById('page-condiments').style.display = 'none';
+        document.getElementById('page-confirmation').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
