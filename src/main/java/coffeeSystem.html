@@ -28,12 +28,12 @@
     <button onclick="showBeverageOptions()">Start your order here</button>
 </div>
 
-<div id="page-beverage" class="container" style="display: none;"></div>
+<div id="page-beverage" class="container" style="display: none;">
     <div class="buttons">
-        <button onclick="selectBeverage('Dark roast')">Dark roast ($2.50)</button>
-        <button onclick="selectBeverage('Espresso')">Espresso ($3.00)</button>
-        <button onclick="selectBeverage('House blend')">House blend ($2.00)</button>
-        <button onclick="selectBeverage('Decaf')">Decaf ($2.50)</button>
+        <button onclick="selectBeverage('Dark roast')">Dark roast</button>
+        <button onclick="selectBeverage('Espresso')">Espresso</button>
+        <button onclick="selectBeverage('House blend')">House blend</button>
+        <button onclick="selectBeverage('Decaf')">Decaf </button>
     </div>
     <div class="cart" id="cart"></div>
 </div>
@@ -47,6 +47,7 @@
 </div>
 <div class="cart" id="cart-condiments"></div>
 <button onclick="goBackToBeverages()">Back to Beverages</button>
+<button onclick="confirmOrder()">Confirm Order</button>
 </div>
 
 <div id="page-confirmation" class="container" style="display: none">
@@ -93,7 +94,7 @@
         });
     }
     function confirmOrder() {
-        const orderSummary = `Selected Beverage: ${selectedBeverage}\nCondiments: ${selectedCondiments.join(', ')}`;
+        const orderSummary = "Order placed: Order id: 24 Dark roast with milk and double mocha! Total: $4.5";
         document.getElementById('order-summary').textContent = orderSummary;
         document.getElementById('page-condiments').style.display = 'none';
         document.getElementById('page-confirmation').style.display = 'block';
