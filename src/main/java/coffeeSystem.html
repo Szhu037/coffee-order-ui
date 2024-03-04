@@ -38,22 +38,20 @@
     <div class="cart" id="cart"></div>
 </div>
 
-<div id="page-condiments" class="container" style="display: none;"></div>
-<div class="buttons">
-    <button onclick="addCondiment('Milk')">Milk</button>
-    <button onclick="addCondiment('Mocha')">Mocha</button>
-    <button onclick="addCondiment('Soy')">Soy</button>
-    <button onclick="addCondiment('Whip')">Whip</button>
-</div>
-<div class="cart" id="cart-condiments"></div>
-<button onclick="goBackToBeverages()">Back to Beverages</button>
-<button onclick="confirmOrder()">Confirm Order</button>
+<div id="page-condiments" class="container" style="display: none;">
+    <div class="buttons">
+        <button onclick="addCondiment('Milk')">Milk</button>
+        <button onclick="addCondiment('Mocha')">Mocha</button>
+        <button onclick="addCondiment('Soy')">Soy</button>
+        <button onclick="addCondiment('Whip')">Whip</button>
+    </div>
+    <div class="cart" id="cart-condiments"></div>
+        <button onclick="goBackToBeverages()">Back to Beverages</button>
+        <button onclick="confirmOrder()">Confirm Order</button>
 </div>
 
-<div id="page-confirmation" class="container" style="display: none">
-    <h2>Order Confirmation</h2>
-    <p id="order-summary"></p>
-    <button onclick="confirmOrder()">Confirm Order</button>
+<div id="page-confirmation" class="container" style="display: none;">
+    <p id = "order-summary"></p>
 </div>
 
 <script>
@@ -93,9 +91,27 @@
             cartCondiments.appendChild(condimentButton);
         });
     }
-    function confirmOrder() {
-        const orderSummary = "Order placed: Order id: 24 Dark roast with milk and double mocha! Total: $4.5";
-        document.getElementById('order-summary').textContent = orderSummary;
+    async function confirmOrder() {
+        const orderData = {
+            beverage: selectedBeverage,
+            condiments: selectedCondiments,
+            cost: 0
+        };
+        const response = await fetch("/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({orderData})
+        });
+        if (!response.ok) {
+            throw new Error("Order failed");
+        }
+
+        const receipt = await response.json();
+
+        const summary = `Order placed: Order id: ${receipt.id} ${receipt.description}! Total: $${receipt.cost}`;
+        document.getElementById('order-summary').textContent = summary;
         document.getElementById('page-condiments').style.display = 'none';
         document.getElementById('page-confirmation').style.display = 'block';
     }
