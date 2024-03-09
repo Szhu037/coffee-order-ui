@@ -55,6 +55,7 @@
 </div>
 
 <script>
+    let host = "http://localhost:8080";
     let selectedBeverage = "";
     let selectedCondiments = [];
 
@@ -91,29 +92,36 @@
             cartCondiments.appendChild(condimentButton);
         });
     }
+
     async function confirmOrder() {
-        const orderData = {
-            beverage: selectedBeverage,
-            condiments: selectedCondiments,
-            cost: 0
-        };
-        const response = await fetch("/orders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({orderData})
-        });
-        if (!response.ok) {
-            throw new Error("Order failed");
+        try {
+            const order = {
+                beverage: selectedBeverage,
+                condiments: selectedCondiments
+            };
+
+            let response = await fetch(host + "/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(order),
+            });
+            if (response.ok) {
+                const receipt = await response.json();
+                const summary = `Order placed: Order id: ${receipt.id} ${selectedBeverage} with ${selectedCondiments.join(', ')}! Total: $${receipt.cost}`;
+                document.getElementById('order-summary').textContent = summary;
+                document.getElementById('page-condiments').style.display = 'none';
+                document.getElementById('page-confirmation').style.display = 'block';
+            }
+            else {
+                console.log(respose);
+                throw new Error("Order wasn't placed.");
+            }
+        } catch(error) {
+            console.error(error);
+            throw new Error("Order didn't work");
         }
-
-        const receipt = await response.json();
-
-        const summary = `Order placed: Order id: ${receipt.id} ${receipt.description}! Total: $${receipt.cost}`;
-        document.getElementById('order-summary').textContent = summary;
-        document.getElementById('page-condiments').style.display = 'none';
-        document.getElementById('page-confirmation').style.display = 'block';
     }
 </script>
 
