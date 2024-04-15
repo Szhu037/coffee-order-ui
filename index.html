@@ -27,6 +27,7 @@
 <div id="page-start" class="container">
     <button onclick="showBeverageOptions()">Start your order here</button>
 </div>
+<script src="configuration.js"></script>
 
 <div id="page-beverage" class="container" style="display: none;">
     <div class="buttons">
@@ -53,9 +54,8 @@
 <div id="page-confirmation" class="container" style="display: none;">
     <p id = "order-summary"></p>
 </div>
-
 <script>
-    let host = "http://localhost:8080";
+    let host = "http://localhost:8080"
     let selectedBeverage = "";
     let selectedCondiments = [];
 
@@ -104,6 +104,7 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${configuration.token()}`
                 },
                 body: JSON.stringify(order),
             });
@@ -119,6 +120,9 @@
                 throw new Error("Order wasn't placed.");
             }
         } catch(error) {
+            if (response.status == 401) {
+                logout();
+            }
             console.error(error);
             throw new Error("Order didn't work");
         }
